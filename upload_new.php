@@ -39,20 +39,17 @@ if ($uploadOk == 0) {
     echo "Sorry, your file was not uploaded.";
 // if everything is ok, try to upload file
 } else {
+    $xml = new SimpleXMLElement("<images/>");
+    $image = $xml->addChild("image");
+    $title = $image->addChild("title",$title);
+    $description = $image->addChild("description",$description);
+    $file=$image->addChild("file",$_FILES["fileToUpload"]["name"]);
+    $dom = new DOMDocument('1.0');
+    $dom->preserveWhiteSpace = false;
+    $dom->formatOutput = true;
+    $dom->loadXML($xml->asXML());
+    $dom->save("paths.xml");
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-        $xml = new DOMDocument("1.0");
-        $xml->formatOutput=true;
-        try {$main = $xml->createElement("main");
-        $xml-> appendChild($main);
-        $title=$xml->createElement("title",$title);
-        $main->appendChild($title);
-        $description=$xml->createElement("description",$description);
-        $main->appendChild($description);
-        $file=$xml->createElement("file",$_FILES["fileToUpload"]["name"]);
-        $main->appendChild($file);
-        $xml->save("paths.xml");
-        } catch (DOMException $e) {
-        }
         header("Location: display.php");
     } else {
         echo "Sorry, there was an error uploading your file.";

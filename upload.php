@@ -3,6 +3,9 @@ $target_dir = "uploads/";
 $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
 $title = $_POST["title"];
 $description = $_POST["description"];
+$x = $_POST["x"];
+$y = $_POST["y"];
+$file = $_POST["image"];
 $uploadOk = 1;
 $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 
@@ -39,19 +42,21 @@ if ($uploadOk == 0) {
     echo "Sorry, your file was not uploaded.";
 // if everything is ok, try to upload file
 } else {
+    $xml = simplexml_load_file("paths.xml");
+    $location = $xml->xpath("/images/image")[0];
+    $image = $location->addChild("image");
+    $title = $image->addChild("title",$title);
+    $description = $image->addChild("description",$description);
+    $file=$image->addChild("file",$_FILES["fileToUpload"]["name"]);
+    $x = $image->addChild("x",$x);
+    $y = $image->addChild("y",$y);
+    $dom = new DOMDocument('1.0');
+    $dom->preserveWhiteSpace = false;
+    $dom->formatOutput = true;
+    $dom->loadXML($xml->asXML());
+    $dom->save("paths.xml");
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-        $xml=simplexml_load_file("paths.xml");
-        try {$sub = $xml->createElement("sub");
-            $xml-> appendChild($sub);
-            $title=$xml->createElement("title",$title);
-            $sub->appendChild($title);
-            $description=$xml->createElement("description",$description);
-            $sub->appendChild($description);
-            $file=$xml->createElement("file",$_FILES["fileToUpload"]["name"]);
-            $sub->appendChild($file);
-            $xml->save("paths.xml");
-        } catch (DOMException $e) {
-        }
+
         header("Location: display.php");
     } else {
         echo "Sorry, there was an error uploading your file.";
