@@ -41,9 +41,9 @@ if ($uploadOk == 0) {
 } else {
     $xml = new SimpleXMLElement("<images/>");
     $image = $xml->addChild("image");
-    $title = $image->addChild("title",$title);
-    $description = $image->addChild("description",$description);
-    $file=$image->addChild("file",$_FILES["fileToUpload"]["name"]);
+    $image->addAttribute("title",$title);
+    $image->addAttribute("description",$description);
+    $image->addAttribute("file",$_FILES["fileToUpload"]["name"]);
     $dom = new DOMDocument('1.0');
     $dom->preserveWhiteSpace = false;
     $dom->formatOutput = true;

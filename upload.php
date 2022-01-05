@@ -25,7 +25,7 @@ if (file_exists($target_file)) {
 }
 
 // Check file size
-if ($_FILES["fileToUpload"]["size"] > 500000) {
+if ($_FILES["fileToUpload"]["size"] > 5000000) {
     echo "Sorry, your file is too large.";
     $uploadOk = 0;
 }
@@ -43,13 +43,13 @@ if ($uploadOk == 0) {
 // if everything is ok, try to upload file
 } else {
     $xml = simplexml_load_file("paths.xml");
-    $location = $xml->xpath("/images/image")[0];
+    $location = $xml->xpath("//image[@file='$file']")[0];
     $image = $location->addChild("image");
-    $title = $image->addChild("title",$title);
-    $description = $image->addChild("description",$description);
-    $file=$image->addChild("file",$_FILES["fileToUpload"]["name"]);
-    $x = $image->addChild("x",$x);
-    $y = $image->addChild("y",$y);
+    $image->addAttribute("title",$title);
+    $image->addAttribute("description",$description);
+    $image->addAttribute("file",$_FILES["fileToUpload"]["name"]);
+    $image->addAttribute("x",$x);
+    $image->addAttribute("y",$y);
     $dom = new DOMDocument('1.0');
     $dom->preserveWhiteSpace = false;
     $dom->formatOutput = true;
