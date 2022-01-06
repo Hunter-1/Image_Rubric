@@ -56,8 +56,7 @@ if ($uploadOk == 0) {
     $dom->loadXML($xml->asXML());
     $dom->save("paths.xml");
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-
-        header("Location: display.php");
+        header("Location: display.php?file=".$file);
     } else {
         echo "Sorry, there was an error uploading your file.";
     }

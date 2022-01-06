@@ -43,14 +43,15 @@ if ($uploadOk == 0) {
     $image = $xml->addChild("image");
     $image->addAttribute("title",$title);
     $image->addAttribute("description",$description);
-    $image->addAttribute("file",$_FILES["fileToUpload"]["name"]);
+    $file = $_FILES["fileToUpload"]["name"];
+    $image->addAttribute("file",$file);
     $dom = new DOMDocument('1.0');
     $dom->preserveWhiteSpace = false;
     $dom->formatOutput = true;
     $dom->loadXML($xml->asXML());
     $dom->save("paths.xml");
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-        header("Location: display.php");
+        header("Location: display.php?file=".$file);
     } else {
         echo "Sorry, there was an error uploading your file.";
     }
