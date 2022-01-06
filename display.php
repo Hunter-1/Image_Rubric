@@ -3,6 +3,7 @@ $dirname = "uploads/";
 $xml = simplexml_load_file("paths.xml");
 $file = htmlspecialchars($_GET["file"]);
 $image = $xml->xpath("//image[@file='$file']")[0];
+$mainImage =
 $currentImage = $image;
 $currentFile = $currentImage->attributes()->file;
 $filepath = $dirname.$currentFile;
@@ -12,11 +13,23 @@ $xml = simplexml_load_file("paths.xml");
 echo '<img alt="'.$currentTitle.'"src="'.$filepath.'" /><br />';
 echo '<h1>'.$currentTitle.'</h1>';
 echo '<p>'.$currentDescription.'</p>';
+
+if($currentImage != $xml->xpath("/images/image")){
+    $upperImage = $currentImage->xpath("..")[0];
+    $upperTitle = $upperImage->attributes()->title;
+    $upperFile = $upperImage->attributes()->file;
+    if ($upperFile != null){
+        echo '<form method="get" action="display.php">
+    <input type="hidden" value="'.$upperFile.'" name="file" id="file">
+    <button type="submit">'.$upperTitle.'</button>
+    </form>';
+    }
+}
+
 foreach ($currentImage->children() as $subImage){
     $subTitle = $subImage->attributes()->title;
     $subFile = $subImage->attributes()->file;
-
-    echo '<form method="get" action="display.php?file='.$subFile.'">
+    echo '<form method="get" action="display.php">
     <input type="hidden" value="'.$subFile.'" name="file" id="file">
     <button type="submit">'.$subTitle.'</button>
     </form>';
