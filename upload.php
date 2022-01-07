@@ -3,9 +3,16 @@ $target_dir = "uploads/";
 $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
 $title = $_POST["title"];
 $description = $_POST["description"];
-$x = $_POST["x"];
-$y = $_POST["y"];
-$file = $_POST["image"];
+$x = null;
+$y = null;
+$new = $_POST["new"];
+$file = $_FILES["fileToUpload"]["name"];
+if (!$new){
+    $x = $_POST["x"];
+    $y = $_POST["y"];
+    $file = $_POST["image"];
+}
+
 $uploadOk = 1;
 $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 
@@ -42,14 +49,22 @@ if ($uploadOk == 0) {
     echo "Sorry, your file was not uploaded.";
 // if everything is ok, try to upload file
 } else {
-    $xml = simplexml_load_file("paths.xml");
-    $location = $xml->xpath("//image[@file='$file']")[0];
-    $image = $location->addChild("image");
+    if ($new){
+        $xml = new SimpleXMLElement("<images/>");
+        $image = $xml->addChild("image");
+
+    } else {
+        $xml = simplexml_load_file("paths.xml");
+        $location = $xml->xpath("//image[@file='$file']")[0];
+        $image = $location->addChild("image");
+    }
     $image->addAttribute("title",$title);
     $image->addAttribute("description",$description);
     $image->addAttribute("file",$_FILES["fileToUpload"]["name"]);
-    $image->addAttribute("x",$x);
-    $image->addAttribute("y",$y);
+    if ($x != null || $y != null) {
+        $image->addAttribute("x", $x);
+        $image->addAttribute("y", $y);
+    }
     $dom = new DOMDocument('1.0');
     $dom->preserveWhiteSpace = false;
     $dom->formatOutput = true;

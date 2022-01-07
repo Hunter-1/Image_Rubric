@@ -3,18 +3,17 @@ $dirname = "uploads/";
 $xml = simplexml_load_file("paths.xml");
 $file = htmlspecialchars($_GET["file"]);
 $image = $xml->xpath("//image[@file='$file']")[0];
-$mainImage =
 $currentImage = $image;
 $currentFile = $currentImage->attributes()->file;
 $filepath = $dirname.$currentFile;
 $currentTitle = $currentImage->attributes()->title;
 $currentDescription = $currentImage->attributes()->description;
-$xml = simplexml_load_file("paths.xml");
-echo '<head><title>Image Rubrics</title><style>
+?>
+<head><title>Image Rubrics</title><style>
 #image_container>img {
     position: relative;
-}';
-$i = 0;
+}
+<?php
 foreach ($currentImage->children() as $subImage){
     $subTitle = $subImage->attributes()->title;
     $subFile = $subImage->attributes()->file;
@@ -27,12 +26,12 @@ position: absolute;
 left: '.$subX.'px;
 top: '.$subY.'px;
 }';
-    $i++;
 }
-echo'</style></head>';
-echo '<div id="image_container">';
+?>
+</style></head>
+<div id="image_container">
+    <?php
 echo '<img onclick="imageOnClick(this)" alt="'.$currentTitle.'"src="'.$filepath.'" /><br />';
-$i = 0;
 foreach ($currentImage->children() as $subImage){
     $subTitle = $subImage->attributes()->title;
     $subFile = $subImage->attributes()->file;
@@ -40,9 +39,10 @@ foreach ($currentImage->children() as $subImage){
     <input type="hidden" value="'.$subFile.'" name="file" id="file">
     <button type="submit" id="'.$subFile.'">'.$subTitle.'</button>
     </form>';
-    $i++;
 }
+
 echo '</div>';
+echo '<div class="float-child">';
 echo '<h1>'.$currentTitle.'</h1>';
 echo '<p>'.$currentDescription.'</p>';
 
@@ -57,8 +57,10 @@ if($currentImage != $xml->xpath("/images/image")){
     </form>';
     }
 }
-
-echo '<form action="upload.php" method="post" enctype="multipart/form-data">
+    ?>
+</div>
+<div class="float-child">
+<form action="upload.php" method="post" enctype="multipart/form-data">
     Select image to upload:
     <input type="file" name="fileToUpload" id="fileToUpload">
     <label for="title">Title</label>
@@ -69,10 +71,13 @@ echo '<form action="upload.php" method="post" enctype="multipart/form-data">
     <input type="number" name="x" id="x">
     <label for="y">Y Coordinates</label>
     <input type="number" name="y" id="y">
-    <input type="hidden" value="'.$currentFile.'" name="image" id="image">
+    <input type="hidden" value=0 name="new" id="new">
+    <?php
+    echo '<input type="hidden" value="'.$currentFile.'" name="image" id="image">';
+    ?>
     <input type="submit" value="Upload" name="submit">
-</form>';
-?>
+</form>
+</div>
 <script type="text/javascript">
     function imageOnClick()
     {
