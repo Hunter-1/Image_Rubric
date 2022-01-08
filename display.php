@@ -2,6 +2,7 @@
 $dirname = "uploads/";
 $xml = simplexml_load_file("paths.xml");
 $file = htmlspecialchars($_GET["file"]);
+//Gets all of the required attributes from the current Image
 $image = $xml->xpath("//image[@file='$file']")[0];
 $currentImage = $image;
 $currentFile = $currentImage->attributes()->file;
@@ -13,6 +14,7 @@ $currentDescription = $currentImage->attributes()->description;
     <link rel="stylesheet" href="style.css">
     <style>
         <?php
+        //Creates Css that positions the buttons for the subimages on top of the current image
         foreach ($currentImage->children() as $subImage){
             $subTitle = $subImage->attributes()->title;
             $subFile = $subImage->attributes()->file;
@@ -49,7 +51,7 @@ $currentDescription = $currentImage->attributes()->description;
     $i = 1;
     foreach ($currentImage->children() as $subImage) {
         $subTitle = $subImage->attributes()->title;
-        echo '<p> '.$i.'. '.$subTitle.'</p>';
+        echo '<p> ' . $i . '. ' . $subTitle . '</p>';
         $i++;
     }
 
@@ -90,20 +92,23 @@ $currentDescription = $currentImage->attributes()->description;
     </form>
 </div>
 <script type="text/javascript">
+    //Default values for max X and Y
     let width = "1000";
     let height = "1000";
     document.getElementById("input_x").max = width;
     document.getElementById("input_y").max = height;
     <?php
     list($imgWidth, $imgHeight) = getimagesize($filepath);
-    echo 'document.getElementById("input_x").max = "'.$imgWidth.'";
+    echo 'document.getElementById("input_x").max = "' . $imgWidth . '";
     ';
-    echo 'document.getElementById("input_y").max = "'.$imgHeight.'";
+    echo 'document.getElementById("input_y").max = "' . $imgHeight . '";
     ';
     ?>
     function imageOnClick() {
         getEventLocation(event);
     }
+
+    //Gets the position where the mouse clicked when the image is clicked on
     function getEventLocation(eventRef) {
         let positionX = 0;
         let positionY = 0;
@@ -111,7 +116,7 @@ $currentDescription = $currentImage->attributes()->description;
         if (eventRef.pageX) {
             positionX = eventRef.pageX;
             positionY = eventRef.pageY;
-        }  else if (eventRef.clientX) {
+        } else if (eventRef.clientX) {
             positionX = eventRef.clientX;
             positionY = eventRef.clientY;
         }
