@@ -5,4 +5,4 @@ foreach($files as $file){ // iterate files
         unlink($file); // delete file
     }
 }
-header("Location: index.php");
+header("Location: index.html");
