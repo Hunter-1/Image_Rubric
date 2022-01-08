@@ -1,16 +1,16 @@
 <?php
 $target_dir = "uploads/";
 $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
-$title = $_POST["title"];
-$description = $_POST["description"];
+$title = $_POST["input_title"];
+$description = $_POST["input_description"];
 $x = null;
 $y = null;
 $new = $_POST["new"];
 $file = $_FILES["fileToUpload"]["name"];
 if (!$new){
-    $x = $_POST["x"];
-    $y = $_POST["y"];
-    $file = $_POST["image"];
+    $x = $_POST["input_x"];
+    $y = $_POST["input_y"];
+    $file = $_POST["input_image"];
 }
 
 $uploadOk = 1;
@@ -23,36 +23,37 @@ if(isset($_POST["submit"])) {
         echo "File is not an image.";
         $uploadOk = 0;
     }
+    // Check if file already exists
+    if (file_exists($target_file)) {
+        echo "Sorry, file already exists.";
+        $uploadOk = 0;
+    }
+    // Check file size
+    if ($_FILES["fileToUpload"]["size"] > 500000) {
+        echo "Sorry, your file is too large.";
+        $uploadOk = 0;
+    }
+    // Allow certain file formats
+    if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+        && $imageFileType != "gif" ) {
+        echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+        $uploadOk = 0;
+    }
 }
-
-// Check if file already exists
-if (file_exists($target_file)) {
-    echo "Sorry, file already exists.";
-    $uploadOk = 0;
-}
-
-// Check file size
-if ($_FILES["fileToUpload"]["size"] > 5000000) {
-    echo "Sorry, your file is too large.";
-    $uploadOk = 0;
-}
-
-// Allow certain file formats
-if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-    && $imageFileType != "gif" ) {
-    echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-    $uploadOk = 0;
-}
-
 // Check if $uploadOk is set to 0 by an error
 if ($uploadOk == 0) {
     echo "Sorry, your file was not uploaded.";
+    echo '    <form action="reset.php" id="reset">
+        <input type="submit" value="Reset" name="reset">
+    </form>';
 // if everything is ok, try to upload file
 } else {
     if ($new){
         $xml = new SimpleXMLElement("<images/>");
         $image = $xml->addChild("image");
-
+        if (!file_exists('uploads')) {
+            mkdir('uploads', 0777, true);
+        }
     } else {
         $xml = simplexml_load_file("paths.xml");
         $location = $xml->xpath("//image[@file='$file']")[0];
