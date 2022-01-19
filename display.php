@@ -13,19 +13,34 @@ $currentDescription = $currentImage->attributes()->description;
 <head><title>Image Rubrics</title>
     <link rel="stylesheet" href="style.css">
     <style>
+
         <?php
         //Creates Css that positions the buttons for the subimages on top of the current image
+        list($imgWidth, $imgHeight) = getimagesize($filepath);
+        $aspectRatio = ($imgHeight / $imgWidth)*100;
+        echo '
+            #image_container {
+            position: relative;
+            width: 100%;
+            height: 0px;
+            padding-bottom: min('.$aspectRatio.'%,'.$imgHeight.'px);
+            max-width: '.$imgWidth.';
+            max-height: '.$imgHeight.'
+        }';
+
         foreach ($currentImage->children() as $subImage){
             $subTitle = $subImage->attributes()->title;
             $subFile = $subImage->attributes()->file;
             $subFile = str_replace(".", "\.",$subFile);
             $subX = $subImage->attributes()->x;
             $subY = $subImage->attributes()->y;
+            $percentX = ($subX/$imgWidth)*100;
+            $percentY = ($subY/$imgHeight)*100;
             echo '
-        #image_container>form>#'.$subFile.' {
+        #image_container>#'.$subFile.' {
         position: absolute;
-        left: '.$subX.'px;
-        top: '.$subY.'px;
+        left: '.$percentX.'%;
+        top: '.$percentY.'%;
         }';
         }
         ?>
@@ -34,15 +49,21 @@ $currentDescription = $currentImage->attributes()->description;
 <div id="image_container">
     <?php
 
-    echo '<img onclick="imageOnClick(this)" id="image" alt="' . $currentTitle . '"src="' . $filepath . '" /><br />';
+    echo '<img onclick="imageOnClick(this)" id="image" alt="' . $currentTitle . '"src="' . $filepath . '" />';
 
     foreach ($currentImage->children() as $subImage) {
         $subTitle = $subImage->attributes()->title;
         $subFile = $subImage->attributes()->file;
-        echo '<form method="get" action="display.php">
+
+        echo '
+        <div id="' . $subFile . '">
+        
+<form method="get" action="display.php" >
     <input type="hidden" value="' . $subFile . '" name="file" id="file">
     <button type="submit" id="' . $subFile . '">' . $subTitle . '</button>
-    </form>';
+    </form>
+    </div>
+    ';
     }
     echo '</div>';
     echo '<div class="info">';
@@ -91,6 +112,7 @@ $currentDescription = $currentImage->attributes()->description;
         <input type="submit" value="Reset" name="reset">
     </form>
 </div>
+
 <script type="text/javascript">
     //Default values for max X and Y
     let width = "1000";

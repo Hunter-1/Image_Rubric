@@ -21,6 +21,7 @@ button {
 #image_container > img {
     position: relative;
     float: left;
+    max-width: 100%;
 }
 
 .info {
