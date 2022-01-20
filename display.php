@@ -31,13 +31,14 @@ $currentDescription = $currentImage->attributes()->description;
         foreach ($currentImage->children() as $subImage){
             $subTitle = $subImage->attributes()->title;
             $subFile = $subImage->attributes()->file;
+            $subFile = str_replace(" ", "_",$subFile);
             $subFile = str_replace(".", "\.",$subFile);
             $subX = $subImage->attributes()->x;
             $subY = $subImage->attributes()->y;
             $percentX = ($subX/$imgWidth)*100;
             $percentY = ($subY/$imgHeight)*100;
             echo '
-        #image_container>#'.$subFile.' {
+        #image_container>#a'.$subFile.' {
         position: absolute;
         left: '.$percentX.'%;
         top: '.$percentY.'%;
@@ -54,13 +55,14 @@ $currentDescription = $currentImage->attributes()->description;
     foreach ($currentImage->children() as $subImage) {
         $subTitle = $subImage->attributes()->title;
         $subFile = $subImage->attributes()->file;
+        $subFile = str_replace(" ", "_",$subFile);
 
         echo '
-        <div id="' . $subFile . '">
+        <div id="a' . $subFile . '">
         
 <form method="get" action="display.php" >
     <input type="hidden" value="' . $subFile . '" name="file" id="file">
-    <button type="submit" id="' . $subFile . '">' . $subTitle . '</button>
+    <button type="submit" id="a' . $subFile . '">' . $subTitle . '</button>
     </form>
     </div>
     ';
