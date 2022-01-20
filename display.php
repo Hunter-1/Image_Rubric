@@ -55,14 +55,14 @@ $currentDescription = $currentImage->attributes()->description;
     foreach ($currentImage->children() as $subImage) {
         $subTitle = $subImage->attributes()->title;
         $subFile = $subImage->attributes()->file;
-        $subFile = str_replace(" ", "_",$subFile);
+        $subFile2 = str_replace(" ", "_",$subFile);
 
         echo '
-        <div id="a' . $subFile . '">
+        <div id="a' . $subFile2 . '">
         
 <form method="get" action="display.php" >
     <input type="hidden" value="' . $subFile . '" name="file" id="file">
-    <button type="submit" id="a' . $subFile . '">' . $subTitle . '</button>
+    <button type="submit" id="a' . $subFile2 . '">' . $subTitle . '</button>
     </form>
     </div>
     ';
